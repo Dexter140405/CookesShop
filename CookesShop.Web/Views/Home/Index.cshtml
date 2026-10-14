@@ -1,0 +1,128 @@
+@{
+    ViewData["Title"] = "Trang chủ";
+    var hotProducts = ViewBag.HotProducts as List<CookesShop.Web.Models.Product>;
+    var bestSellers = ViewBag.BestSellers as List<CookesShop.Web.Models.Product>;
+}
+
+<!-- Hero Banner -->
+<div class="row mb-5 align-items-center" style="background-color: var(--color-butter); border-radius: 20px; padding: 40px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    <div class="col-md-6 text-center text-md-start mb-4 mb-md-0">
+        <h1 class="display-4" style="color: var(--color-chocolate);">Ngọt ngào từng khoảnh khắc</h1>
+        <p class="lead" style="color: var(--color-chocolate-hover);">Bánh tươi mỗi ngày, làm từ nguyên liệu chọn lọc với tình yêu thương gửi đến bạn.</p>
+        <a asp-controller="Product" asp-action="Index" class="btn btn-primary btn-lg mt-3">Khám phá ngay</a>
+    </div>
+    <div class="col-md-6 text-center">
+        <!-- Placeholder for a beautiful cake image -->
+        <div style="background-color: white; border-radius: 50%; width: 300px; height: 300px; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+            <i class="fa-solid fa-cake-candles" style="font-size: 8rem; color: var(--color-chocolate);"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Hot Products Section -->
+<div class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0"><i class="fa-solid fa-fire text-danger me-2"></i> Bánh Đang Hot</h2>
+        <a asp-controller="Product" asp-action="Index" class="text-decoration-none" style="color: var(--color-chocolate); font-weight: 600;">Xem tất cả <i class="fa-solid fa-arrow-right ms-1"></i></a>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        @if (hotProducts != null && hotProducts.Any())
+        {
+            foreach (var item in hotProducts)
+            {
+                <div class="col">
+                    <div class="card h-100 product-card">
+                        <a href="@Url.Action("Details", "Product", new { slug = item.Slug })" class="text-decoration-none text-dark">
+                            <div class="position-relative">
+                                @if (item.StockQuantity <= 0)
+                                {
+                                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style="background: rgba(255,255,255,0.7); z-index: 10;">
+                                        <span class="badge bg-danger fs-6 p-2 rounded-pill">Cháy hàng</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger position-absolute top-0 end-0 m-2 rounded-pill">HOT</span>
+                                }
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <div class="card-img-top d-flex align-items-center justify-content-center" style="background-color: #f8f9fa; height: 200px;">
+                                        <i class="fa-solid fa-cookie-bite" style="font-size: 4rem; color: #ccc;"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title text-truncate" title="@item.Name">@item.Name</h5>
+                                <p class="card-text text-muted small">@item.Category?.Name</p>
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <span class="product-price">@item.Price.ToString("N0") đ</span>
+                                    @if (item.StockQuantity > 0)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-accent rounded-circle btn-add-cart" data-id="@item.Id" style="width: 35px; height: 35px; padding: 0;"><i class="fa-solid fa-plus"></i></button>
+                                    }
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center text-muted">
+                <p>Hiện chưa có sản phẩm hot nào.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Best Sellers Section -->
+<div class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0"><i class="fa-solid fa-star text-warning me-2"></i> Bán Chạy Nhất</h2>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        @if (bestSellers != null && bestSellers.Any())
+        {
+            foreach (var item in bestSellers)
+            {
+                <div class="col">
+                    <div class="card h-100 product-card">
+                        <a href="@Url.Action("Details", "Product", new { slug = item.Slug })" class="text-decoration-none text-dark">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <div class="card-img-top d-flex align-items-center justify-content-center" style="background-color: #f8f9fa; height: 200px;">
+                                    <i class="fa-solid fa-cookie" style="font-size: 4rem; color: #ccc;"></i>
+                                </div>
+                            }
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title text-truncate" title="@item.Name">@item.Name</h5>
+                                <p class="card-text text-muted small">@item.Category?.Name</p>
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <span class="product-price">@item.Price.ToString("N0") đ</span>
+                                    <button type="button" class="btn btn-sm btn-accent rounded-circle btn-add-cart" data-id="@item.Id" style="width: 35px; height: 35px; padding: 0;"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center text-muted">
+                <p>Đang cập nhật danh sách sản phẩm bán chạy.</p>
+            </div>
+        }
+    </div>
+</div>

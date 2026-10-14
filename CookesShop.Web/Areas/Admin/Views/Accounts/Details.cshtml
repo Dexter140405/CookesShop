@@ -1,0 +1,79 @@
+@model CookesShop.Web.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Chi tiết Tài khoản";
+    var roles = ViewBag.Roles as IList<string>;
+}
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div style="width: 100px; height: 100px; border-radius: 50%; background-color: var(--bs-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: bold; margin: 0 auto 20px;">
+                    @(string.IsNullOrWhiteSpace(Model.FullName) ? "U" : Model.FullName.Substring(0, 1).ToUpper())
+                </div>
+                <h4>@Model.FullName</h4>
+                <p class="text-muted mb-1">@Model.Email</p>
+                <div class="mb-3">
+                    @if (roles != null && roles.Any())
+                    {
+                        foreach (var role in roles)
+                        {
+                            <span class="badge bg-primary">@role</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Khách hàng</span>
+                    }
+                </div>
+                
+                <hr />
+                
+                <div class="d-flex justify-content-between px-3 text-start mb-2">
+                    <span class="text-muted">Điểm tích lũy:</span>
+                    <span class="fw-bold text-success">@Model.Points</span>
+                </div>
+                <div class="d-flex justify-content-between px-3 text-start">
+                    <span class="text-muted">Hạng hiện tại:</span>
+                    <span class="fw-bold text-warning">@Model.Tier</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Cập nhật hạng thành viên</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="UpdateTier" method="post" class="d-flex align-items-center">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <select name="tier" class="form-select me-3" style="max-width: 200px;">
+                        <option value="Guest" selected="@(Model.Tier == "Guest")">Khách vãng lai</option>
+                        <option value="Silver" selected="@(Model.Tier == "Silver")">Thẻ Bạc</option>
+                        <option value="Gold" selected="@(Model.Tier == "Gold")">Thẻ Vàng</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 text-danger">Cấp lại mật khẩu</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="ResetPassword" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu mới</label>
+                        <input type="password" name="newPassword" class="form-control" required />
+                        <div class="form-text">Mật khẩu cần ít nhất 6 ký tự, có chữ hoa, chữ thường và số.</div>
+                    </div>
+                    <button type="submit" class="btn btn-danger" onsubmit="return confirm('Xác nhận đổi mật khẩu cho tài khoản này?');">Đặt lại mật khẩu</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

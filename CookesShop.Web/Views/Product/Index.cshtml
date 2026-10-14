@@ -1,0 +1,152 @@
+@model IEnumerable<CookesShop.Web.Models.Product>
+@{
+    ViewData["Title"] = "Thực đơn Bánh";
+    var categories = ViewBag.Categories as List<CookesShop.Web.Models.Category>;
+    var currentCategory = ViewBag.CurrentCategory as string;
+    var currentSearch = ViewBag.CurrentSearch as string;
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+}
+
+<div class="row">
+    <!-- Sidebar / Lọc -->
+    <div class="col-lg-3 mb-4">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body">
+                <h5 class="card-title" style="color: var(--color-chocolate); font-family: 'Pacifico', cursive;">Tìm kiếm</h5>
+                <form method="get" asp-action="Index">
+                    <div class="input-group mb-3">
+                        <input type="text" name="search" class="form-control" placeholder="Tên bánh..." value="@currentSearch" style="border-radius: 20px 0 0 20px;">
+                        <input type="hidden" name="category" value="@currentCategory" />
+                        <button class="btn btn-primary" type="submit" style="border-radius: 0 20px 20px 0;"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3" style="color: var(--color-chocolate); font-family: 'Pacifico', cursive;">Danh mục</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item border-0 px-0">
+                        <a href="@Url.Action("Index", new { search = currentSearch })" 
+                           class="text-decoration-none @(string.IsNullOrEmpty(currentCategory) ? "fw-bold text-warning" : "text-dark")">
+                            <i class="fa-solid fa-cake-candles me-2"></i> Tất cả bánh
+                        </a>
+                    </li>
+                    @if (categories != null)
+                    {
+                        foreach (var cat in categories)
+                        {
+                            <li class="list-group-item border-0 px-0">
+                                <a href="@Url.Action("Index", new { category = cat.Slug, search = currentSearch })" 
+                                   class="text-decoration-none @(currentCategory == cat.Slug ? "fw-bold text-warning" : "text-dark")">
+                                    <i class="fa-solid fa-cookie me-2"></i> @cat.Name
+                                </a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0" style="color: var(--color-chocolate);">
+                @(string.IsNullOrEmpty(currentCategory) ? "Tất cả sản phẩm" : categories?.FirstOrDefault(c => c.Slug == currentCategory)?.Name)
+            </h2>
+            <div class="text-muted">
+                <small>Hiển thị @Model.Count() sản phẩm</small>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 mb-5">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="col">
+                        <div class="card h-100 product-card">
+                            <a href="@Url.Action("Details", new { slug = item.Slug })" class="text-decoration-none text-dark">
+                                <div class="position-relative">
+                                    @if (item.StockQuantity <= 0 && !item.IsHot)
+                                    {
+                                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style="background: rgba(255,255,255,0.7); z-index: 10;">
+                                            <span class="badge bg-secondary fs-6 p-2 rounded-pill">Tạm hết</span>
+                                        </div>
+                                    }
+                                    else if (item.StockQuantity <= 0 && item.IsHot)
+                                    {
+                                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style="background: rgba(255,255,255,0.7); z-index: 10;">
+                                            <span class="badge bg-danger fs-6 p-2 rounded-pill">Cháy hàng</span>
+                                        </div>
+                                    }
+
+                                    @if (item.IsHot)
+                                    {
+                                        <span class="badge bg-danger position-absolute top-0 end-0 m-2 rounded-pill">HOT</span>
+                                    }
+                                    
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;">
+                                    }
+                                    else
+                                    {
+                                        <div class="card-img-top d-flex align-items-center justify-content-center" style="background-color: #f8f9fa; height: 200px;">
+                                            <i class="fa-solid fa-cookie-bite" style="font-size: 4rem; color: #ccc;"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title text-truncate" title="@item.Name">@item.Name</h5>
+                                    <p class="card-text text-muted small">@item.Category?.Name</p>
+                                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                                        <span class="product-price">@item.Price.ToString("N0") đ</span>
+                                        @if (item.StockQuantity > 0)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-accent rounded-circle btn-add-cart" data-id="@item.Id" style="width: 35px; height: 35px; padding: 0;">
+                                                <i class="fa-solid fa-plus"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <i class="fa-solid fa-magnifying-glass fs-1 text-muted mb-3"></i>
+                    <h4>Không tìm thấy sản phẩm nào!</h4>
+                    <p class="text-muted">Vui lòng thử lại với từ khóa hoặc danh mục khác.</p>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (totalPages > 1)
+        {
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1, category = currentCategory, search = currentSearch })" style="border-radius: 20px 0 0 20px;">Trang trước</a>
+                    </li>
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(currentPage == i ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i, category = currentCategory, search = currentSearch })" style="@(currentPage == i ? "background-color: var(--color-butter); border-color: var(--color-butter); color: var(--color-chocolate);" : "color: var(--color-chocolate);")">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1, category = currentCategory, search = currentSearch })" style="border-radius: 0 20px 20px 0;">Trang sau</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+</div>

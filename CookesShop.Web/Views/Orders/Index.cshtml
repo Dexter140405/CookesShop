@@ -1,0 +1,86 @@
+@model IEnumerable<CookesShop.Web.Models.Order>
+@{
+    ViewData["Title"] = "Lịch sử đơn hàng";
+}
+
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="mb-4" style="color: var(--color-chocolate);"><i class="fa-solid fa-clock-rotate-left me-2"></i> Lịch sử đơn hàng</h2>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead style="background-color: var(--color-cream);">
+                                <tr>
+                                    <th scope="col" class="py-3 px-4 border-0">Mã đơn</th>
+                                    <th scope="col" class="py-3 px-4 border-0">Ngày đặt</th>
+                                    <th scope="col" class="py-3 px-4 border-0">Tổng tiền</th>
+                                    <th scope="col" class="py-3 px-4 border-0">Thanh toán</th>
+                                    <th scope="col" class="py-3 px-4 border-0">Trạng thái</th>
+                                    <th scope="col" class="py-3 px-4 border-0 text-center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model)
+                                {
+                                    <tr>
+                                        <td class="px-4 fw-bold">#@order.Id.ToString("D5")</td>
+                                        <td class="px-4">@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td class="px-4" style="color: var(--color-chocolate); font-weight: 600;">@order.TotalAmount.ToString("N0") đ</td>
+                                        <td class="px-4">
+                                            @if (order.PaymentMethod == "Online")
+                                            {
+                                                <span class="badge bg-primary">Online</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">COD</span>
+                                            }
+                                            <br />
+                                            <small class="text-muted">@order.PaymentStatus</small>
+                                        </td>
+                                        <td class="px-4">
+                                            @{
+                                                var bgClass = "bg-secondary";
+                                                switch (order.Status)
+                                                {
+                                                    case "Pending": bgClass = "bg-warning text-dark"; break;
+                                                    case "Approved": bgClass = "bg-info text-dark"; break;
+                                                    case "Delivering": bgClass = "bg-primary"; break;
+                                                    case "Completed": bgClass = "bg-success"; break;
+                                                    case "Cancelled": bgClass = "bg-danger"; break;
+                                                }
+                                            }
+                                            <span class="badge @bgClass rounded-pill">@order.Status</span>
+                                        </td>
+                                        <td class="px-4 text-center">
+                                            <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-outline-primary rounded-pill mb-1">Chi tiết</a>
+                                            @if (order.Status == "Pending")
+                                            {
+                                                <form method="post" asp-action="Cancel" asp-route-id="@order.Id" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill mb-1">Hủy</button>
+                                                </form>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+                <i class="fa-solid fa-box-open mb-3" style="font-size: 5rem; color: #ccc;"></i>
+                <h4 class="text-muted">Bạn chưa có đơn hàng nào</h4>
+                <p class="text-muted mb-4">Hãy đặt mua những chiếc bánh thơm ngon ngay thôi!</p>
+                <a asp-controller="Product" asp-action="Index" class="btn btn-primary px-4 py-2">Khám phá sản phẩm</a>
+            </div>
+        }
+    </div>
+</div>

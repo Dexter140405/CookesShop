@@ -1,0 +1,124 @@
+@model CookesShop.Web.Models.Order
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng #" + Model.Id.ToString("D5");
+}
+
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0" style="color: var(--color-chocolate);">
+                <i class="fa-solid fa-file-invoice me-2"></i> Chi tiết đơn hàng <span class="text-muted">#@Model.Id.ToString("D5")</span>
+            </h2>
+            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">Quay lại</a>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-4" style="color: var(--color-chocolate);">Sản phẩm đã đặt</h5>
+                        
+                        <div class="table-responsive">
+                            <table class="table align-middle border-bottom">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="border-0 text-muted">Sản phẩm</th>
+                                        <th scope="col" class="border-0 text-muted text-center">Đơn giá</th>
+                                        <th scope="col" class="border-0 text-muted text-center">SL</th>
+                                        <th scope="col" class="border-0 text-muted text-end">Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderItems)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-shrink-0" style="width: 50px; height: 50px; background-color: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                                        <i class="fa-solid fa-cookie fs-4 text-muted"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <a href="/Product/Details/@item.Product?.Slug" class="text-decoration-none text-dark fw-bold">@item.Product?.Name</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">@item.UnitPrice.ToString("N0") đ</td>
+                                            <td class="text-center">@item.Quantity</td>
+                                            <td class="text-end fw-bold">@((item.Quantity * item.UnitPrice).ToString("N0")) đ</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="row justify-content-end mt-4">
+                            <div class="col-md-5">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Tạm tính:</span>
+                                    <span>@Model.OrderItems.Sum(x => x.Quantity * x.UnitPrice).ToString("N0") đ</span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.PromotionCode))
+                                {
+                                    <div class="d-flex justify-content-between mb-2 text-success">
+                                        <span>Mã giảm giá (@Model.PromotionCode):</span>
+                                        <span>- @((Model.OrderItems.Sum(x => x.Quantity * x.UnitPrice) - Model.TotalAmount).ToString("N0")) đ</span>
+                                    </div>
+                                }
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Phí giao hàng:</span>
+                                    <span>Miễn phí</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong class="fs-5" style="color: var(--color-chocolate);">Tổng cộng:</strong>
+                                    <strong class="fs-4 text-danger">@Model.TotalAmount.ToString("N0") đ</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 mb-4" style="background-color: var(--color-cream);">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-4" style="color: var(--color-chocolate);">Thông tin đơn hàng</h5>
+                        
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-3">
+                                <strong class="d-block text-muted small">Ngày đặt hàng</strong>
+                                <span>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</span>
+                            </li>
+                            <li class="mb-3">
+                                <strong class="d-block text-muted small">Trạng thái đơn hàng</strong>
+                                @{
+                                    var bgClass = "bg-secondary";
+                                    switch (Model.Status)
+                                    {
+                                        case "Pending": bgClass = "bg-warning text-dark"; break;
+                                        case "Approved": bgClass = "bg-info text-dark"; break;
+                                        case "Delivering": bgClass = "bg-primary"; break;
+                                        case "Completed": bgClass = "bg-success"; break;
+                                        case "Cancelled": bgClass = "bg-danger"; break;
+                                    }
+                                }
+                                <span class="badge @bgClass fs-6 mt-1 rounded-pill">@Model.Status</span>
+                            </li>
+                            <li class="mb-3">
+                                <strong class="d-block text-muted small">Phương thức thanh toán</strong>
+                                <span>@Model.PaymentMethod - @Model.PaymentStatus</span>
+                            </li>
+                            @if (Model.DeliveryStaff != null)
+                            {
+                                <li>
+                                    <strong class="d-block text-muted small">Nhân viên giao hàng</strong>
+                                    <span><i class="fa-solid fa-motorcycle me-2"></i> @Model.DeliveryStaff.FullName</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

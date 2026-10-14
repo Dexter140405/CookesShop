@@ -1,0 +1,67 @@
+@model IEnumerable<CookesShop.Web.Models.Order>
+@{
+    ViewData["Title"] = "Quản lý Đơn hàng";
+}
+
+<div class="card mb-4">
+    <div class="card-header bg-white">
+        <h5 class="mb-0">Danh sách Đơn hàng</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="px-3">Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Tổng tiền</th>
+                        <th>Thanh toán</th>
+                        <th>Trạng thái</th>
+                        <th>NV Giao hàng</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="px-3 fw-bold">#@item.Id.ToString("D5")</td>
+                            <td>@item.User?.FullName</td>
+                            <td>@item.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@item.TotalAmount.ToString("N0") đ</td>
+                            <td>
+                                @if (item.PaymentStatus == "Paid")
+                                {
+                                    <span class="badge bg-success">Đã thanh toán</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Chưa thanh toán</span>
+                                }
+                            </td>
+                            <td>
+                                @{
+                                    var bgClass = "bg-secondary";
+                                    switch (item.Status)
+                                    {
+                                        case "Pending": bgClass = "bg-warning text-dark"; break;
+                                        case "Approved": bgClass = "bg-info text-dark"; break;
+                                        case "Delivering": bgClass = "bg-primary"; break;
+                                        case "Completed": bgClass = "bg-success"; break;
+                                        case "Cancelled": bgClass = "bg-danger"; break;
+                                    }
+                                }
+                                <span class="badge @bgClass">@item.Status</span>
+                            </td>
+                            <td>@(item.DeliveryStaff?.FullName ?? "-")</td>
+                            <td class="text-center">
+                                <a asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Chi tiết & Xử lý</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

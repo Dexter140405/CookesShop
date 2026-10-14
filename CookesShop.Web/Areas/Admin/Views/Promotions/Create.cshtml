@@ -1,0 +1,34 @@
+@model CookesShop.Web.Models.Promotion
+@{
+    ViewData["Title"] = "Thêm Khuyến mãi";
+}
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div class="mb-3">
+                <label asp-for="Code" class="form-label">Mã Code (VD: TET2026)</label>
+                <input asp-for="Code" class="form-control" required />
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DiscountPercentage" class="form-label">Phần trăm giảm (%)</label>
+                    <input asp-for="DiscountPercentage" class="form-control" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="MaxDiscountAmount" class="form-label">Giảm tối đa (VNĐ)</label>
+                    <input asp-for="MaxDiscountAmount" class="form-control" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ExpiryDate" class="form-label">Ngày hết hạn</label>
+                <input asp-for="ExpiryDate" type="date" class="form-control" required />
+            </div>
+            <div class="mb-3 form-check">
+                <input asp-for="IsActive" class="form-check-input" />
+                <label asp-for="IsActive" class="form-check-label">Kích hoạt</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Lưu lại</button>
+        </form>
+    </div>
+</div>

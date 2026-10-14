@@ -1,0 +1,79 @@
+@{
+    ViewData["Title"] = "Hỗ trợ khách hàng";
+}
+
+<div class="row mb-5">
+    <div class="col-12 text-center mb-5">
+        <h1 class="display-4" style="color: var(--color-chocolate);">Trung tâm Hỗ trợ</h1>
+        <p class="lead text-muted">Chúng tôi luôn ở đây để lắng nghe và giúp đỡ bạn.</p>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+            <h3 style="color: var(--color-chocolate);" class="mb-4"><i class="fa-solid fa-headset me-2"></i> Gửi yêu cầu hỗ trợ</h3>
+            <form>
+                <div class="mb-3">
+                    <label class="form-label text-muted">Chủ đề</label>
+                    <select class="form-select rounded-pill">
+                        <option>Tư vấn chọn bánh</option>
+                        <option>Kiểm tra trạng thái đơn hàng</option>
+                        <option>Phản ánh chất lượng</option>
+                        <option>Đăng ký thẻ thành viên</option>
+                        <option>Khác</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted">Email của bạn</label>
+                    <input type="email" class="form-control rounded-pill" placeholder="name@example.com" value="@(User.Identity?.IsAuthenticated == true ? User.Identity.Name : "")">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-muted">Nội dung</label>
+                    <textarea class="form-control" rows="5" placeholder="Vui lòng mô tả chi tiết vấn đề của bạn..." style="border-radius: 20px;"></textarea>
+                </div>
+                <button type="button" class="btn btn-primary rounded-pill px-5" onclick="alert('Cảm ơn bạn đã gửi yêu cầu. Chúng tôi sẽ phản hồi sớm nhất qua email.');">Gửi yêu cầu</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100 p-4" style="background-color: var(--color-cream);">
+            <h3 style="color: var(--color-chocolate);" class="mb-4"><i class="fa-solid fa-phone-volume me-2"></i> Thông tin liên hệ</h3>
+            
+            <ul class="list-unstyled mb-5">
+                <li class="mb-4 d-flex align-items-center">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background-color: white; color: var(--color-chocolate); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);" class="me-3">
+                        <i class="fa-solid fa-location-dot fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0">Địa chỉ cửa hàng</h6>
+                        <span class="text-muted">123 Đường Bánh Ngọt, TP.HCM</span>
+                    </div>
+                </li>
+                <li class="mb-4 d-flex align-items-center">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background-color: white; color: var(--color-chocolate); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);" class="me-3">
+                        <i class="fa-solid fa-phone fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0">Hotline tư vấn</h6>
+                        <span class="text-muted">1900 1234 (8:00 - 22:00)</span>
+                    </div>
+                </li>
+                <li class="d-flex align-items-center">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background-color: white; color: var(--color-chocolate); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);" class="me-3">
+                        <i class="fa-solid fa-envelope fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0">Email hỗ trợ</h6>
+                        <span class="text-muted">support@cookesshop.com</span>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="text-center p-4 bg-white rounded-4 shadow-sm border border-warning border-opacity-25">
+                <h5 class="mb-3" style="color: var(--color-chocolate);">Chat trực tuyến</h5>
+                <p class="text-muted small mb-3">Nhân viên của chúng tôi đang trực tuyến và sẵn sàng hỗ trợ bạn ngay lập tức.</p>
+                <button class="btn btn-accent rounded-pill px-4"><i class="fa-solid fa-comments me-2"></i> Bắt đầu chat</button>
+            </div>
+        </div>
+    </div>
+</div>

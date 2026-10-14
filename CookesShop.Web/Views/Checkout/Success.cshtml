@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+    int orderId = ViewBag.OrderId;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card border-0 shadow-sm rounded-4 p-5">
+                <div class="mb-4">
+                    <div style="width: 100px; height: 100px; background-color: #d1e7dd; color: #198754; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                        <i class="fa-solid fa-check fs-1"></i>
+                    </div>
+                </div>
+                <h1 class="display-5 fw-bold mb-3" style="color: var(--color-chocolate);">Cảm ơn bạn!</h1>
+                <p class="lead text-muted mb-4">Đơn hàng của bạn đã được đặt thành công.</p>
+                
+                <div class="p-4 rounded-4 mb-4" style="background-color: var(--color-cream); display: inline-block;">
+                    <h5 class="mb-0">Mã đơn hàng: <strong class="text-danger">#@orderId.ToString("D5")</strong></h5>
+                </div>
+                
+                <p class="mb-5">Chúng tôi sẽ sớm liên hệ với bạn để xác nhận đơn hàng. Bạn có thể theo dõi trạng thái đơn hàng trong phần <a href="/Orders" class="text-decoration-none fw-bold" style="color: var(--color-chocolate);">Đơn đã đặt</a>.</p>
+                
+                <div>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2 me-2">Về trang chủ</a>
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-primary rounded-pill px-4 py-2">Tiếp tục mua sắm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
